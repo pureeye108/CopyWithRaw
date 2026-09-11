@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CopyWithRAW — Simple Smart Photo Backup</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --primary: #38bdf8;
+            --primary-glow: rgba(56, 189, 248, 0.25);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --radius: 14px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header */
+        header {
+            padding: 24px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand span { color: var(--primary); }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Language Dropdown Selector */
+        .lang-select-wrapper {
+            position: relative;
+        }
+
+        .lang-select {
+            background: var(--bg-card);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .lang-select:hover, .lang-select:focus {
+            border-color: var(--primary);
+        }
+
+        .btn-github {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-github:hover {
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        /* Hero */
+        .hero {
+            padding: 60px 0 40px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            line-height: 1.25;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+
+        .hero h1 span {
+            color: var(--primary);
+        }
+
+        .hero p.tagline {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 680px;
+            margin: 0 auto 32px;
+        }
+
+        .hero-img-box {
+            max-width: 620px;
+            margin: 0 auto 40px;
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-img-box img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Concept Box */
+        .concept-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 36px;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .concept-box h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .concept-box p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            max-width: 740px;
+            margin: 0 auto;
+        }
+
+        /* Diagram Section */
+        .diagram-section {
+            margin-bottom: 60px;
+        }
+
+        .diagram-img-box {
+            max-width: 720px;
+            margin: 0 auto;
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        }
+
+        .diagram-img-box img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Downloads Section */
+        .downloads {
+            padding: 50px 0 80px;
+            border-top: 1px solid var(--border);
+        }
+
+        .downloads h2 {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 36px;
+        }
+
+        .dl-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        .dl-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px 20px;
+            text-align: center;
+            transition: all 0.25s ease;
+        }
+
+        .dl-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .dl-card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .dl-card p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+        }
+
+        .btn-download {
+            display: inline-block;
+            width: 100%;
+            padding: 12px 0;
+            background: var(--primary);
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 0.95rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-download:hover {
+            background: #7dd3fc;
+            box-shadow: 0 4px 15px var(--primary-glow);
+        }
+
+        /* Portable Guide Box */
+        .portable-box {
+            margin-top: 45px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px;
+            text-align: left;
+        }
+
+        .portable-box h3 {
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+            color: #a855f7;
+        }
+
+        .portable-box p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 14px;
+        }
+
+        .portable-box ol {
+            color: var(--text-muted);
+            padding-left: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* SmartScreen Tip */
+        .tip-box {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-top: 35px;
+            color: #cbd5e1;
+            font-size: 0.9rem;
+        }
+
+        .tip-box strong { color: #f59e0b; }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 24px 0;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 2.1rem; }
+            .brand { font-size: 1.1rem; }
+            .btn-github { padding: 6px 10px; font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="container nav">
+            <a href="#" class="brand">📷 CopyWith<span>RAW</span></a>
+            <div class="nav-actions">
+                <!-- Language Selector -->
+                <select id="langSelect" class="lang-select" onchange="changeLanguage(this.value)">
+                    <option value="en">🌐 English</option>
+                    <option value="vi">🇻🇳 Tiếng Việt</option>
+                    <option value="es">🇪🇸 Español</option>
+                    <option value="de">🇩🇪 Deutsch</option>
+                    <option value="fr">🇫🇷 Français</option>
+                    <option value="ja">🇯🇵 日本語</option>
+                    <option value="zh">🇨🇳 中文</option>
+                </select>
+                <a href="https://github.com/pureeye108/CopyWithRaw" target="_blank" class="btn-github">⭐ GitHub</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <h1 data-i18n="hero_title">Select JPEG or RAW.<br><span>Copy Both Automatically.</span></h1>
+            <p class="tagline" data-i18n="hero_tagline">When backing up photo folders, select just one file. CopyWithRAW automatically finds and copies both the JPEG and RAW photo files together.</p>
+
+            <div class="hero-img-box">
+                <img src="images/hero.jpg" alt="Minimalist illustration showing JPEG and RAW photo copy">
+            </div>
+        </div>
+    </section>
+
+    <!-- Concept Explanation -->
+    <section class="container">
+        <div class="concept-box">
+            <h2 data-i18n="concept_title">How It Works</h2>
+            <p data-i18n="concept_desc">You don't need to manually search for matching <b>.NEF</b>, <b>.CR3</b>, or <b>.ARW</b> files in your photo folder. Select the <b>JPEG</b> (or the <b>RAW</b>), right-click <b>Copy with RAW</b>, and the rest get copied over automatically — including <b>.xmp</b> edit files!</p>
+        </div>
+    </section>
+
+    <!-- 3-Step Infographic Diagram -->
+    <section class="container diagram-section">
+        <div class="diagram-img-box">
+            <img src="images/diagram.jpg" alt="3-Step Simple Backup Process Diagram">
+        </div>
+    </section>
+
+    <!-- Download Section -->
+    <section class="downloads">
+        <div class="container">
+            <h2 data-i18n="download_heading">Download CopyWithRAW</h2>
+
+            <div class="dl-grid">
+                <div class="dl-card">
+                    <h3 data-i18n="win_exe_title">🪟 Windows (.EXE)</h3>
+                    <p data-i18n="win_exe_desc">Single-click installer wizard with automatic registry setup.</p>
+                    <a href="https://github.com/pureeye108/CopyWithRaw/actions/runs/34558872926/artifacts/10183581574" class="btn-download" data-i18n="btn_win_exe">Download (.EXE)</a>
+                </div>
+
+                <div class="dl-card">
+                    <h3 data-i18n="win_zip_title">⚡ Windows Portable</h3>
+                    <p data-i18n="win_zip_desc">Standalone batch scripts package (No installer EXE needed).</p>
+                    <a href="CopyWithRAW-Windows-Portable-Scripts.zip" class="btn-download" style="background: #a855f7; color: #fff;" data-i18n="btn_win_zip">Download (.ZIP)</a>
+                </div>
+
+                <div class="dl-card">
+                    <h3 data-i18n="mac_title">🍎 macOS</h3>
+                    <p data-i18n="mac_desc">Finder Quick Action package (.pkg).</p>
+                    <a href="https://github.com/pureeye108/CopyWithRaw/actions/runs/34558872926/artifacts/10183581679" class="btn-download" data-i18n="btn_mac">Download (.PKG)</a>
+                </div>
+
+                <div class="dl-card">
+                    <h3 data-i18n="linux_title">🐧 Linux</h3>
+                    <p data-i18n="linux_desc">Nautilus script package (.tar.gz).</p>
+                    <a href="https://github.com/pureeye108/CopyWithRaw/actions/runs/34558872926/artifacts/10183578728" class="btn-download" data-i18n="btn_linux">Download (.TAR.GZ)</a>
+                </div>
+            </div>
+
+            <!-- Portable Package Guide -->
+            <div class="portable-box">
+                <h3 data-i18n="portable_heading">⚡ Portable Scripts Package — What it is & How to Use</h3>
+                <p data-i18n="portable_intro">The Portable Scripts package contains the raw batch files (Install.bat, CopyWithRAW.ps1, RunHidden.vbs, and FastStone helpers) for users who want to run the scripts directly without an installer wizard.</p>
+                <ol>
+                    <li data-i18n="portable_step1">Download and extract <code>CopyWithRAW-Windows-Portable-Scripts.zip</code> to a permanent folder on your computer (e.g. <code>C:\CopyWithRAW\</code>).</li>
+                    <li data-i18n="portable_step2">Inside the folder, right-click <b>Install.bat</b> and select <b>"Run as administrator"</b>.</li>
+                    <li data-i18n="portable_step3">That's it! Right-clicking any JPEG or RAW file in File Explorer will now display the Copy with RAW menu options.</li>
+                </ol>
+            </div>
+
+            <!-- FastStone / FastRawViewer Setup Guide -->
+            <div class="portable-box" style="margin-top: 24px; border-color: #38bdf8;">
+                <h3 data-i18n="faststone_heading" style="color: #38bdf8;">🦅 FastStone Image Viewer & FastRawViewer Setup Guide</h3>
+                <p data-i18n="faststone_intro">You can add CopyWithRAW as an External Program in FastStone Image Viewer or FastRawViewer to trigger full batch copies with quick hotkeys (like <b>Alt + 1</b> or <b>E</b>):</p>
+                <ol>
+                    <li data-i18n="faststone_step1">Open <b>FastStone Image Viewer</b> and press <kbd style="background: #334155; padding: 2px 6px; border-radius: 4px; color: #fff;">F12</kbd> to open Settings.</li>
+                    <li data-i18n="faststone_step2">Click the <b>Programs</b> tab at the top and click <b>Add</b>.</li>
+                    <li data-i18n="faststone_step3">Enter a Name (e.g. <code>Copy to WL Auto</code>) and browse to <code>FastStone_CopyToWL_Auto.bat</code> inside your install folder.</li>
+                    <li data-i18n="faststone_step4">Click <b>OK</b>. Now press <kbd style="background: #334155; padding: 2px 6px; border-radius: 4px; color: #fff;">Alt + 1</kbd> or <kbd style="background: #334155; padding: 2px 6px; border-radius: 4px; color: #fff;">E</kbd> anytime in FastStone to copy both JPEG & RAW files instantly!</li>
+                </ol>
+            </div>
+
+            <div class="tip-box">
+                <span data-i18n="smartscreen_tip"><strong>💡 Windows SmartScreen Notice:</strong> If Windows shows <i>"Windows protected your PC"</i> when launching the installer, simply click <b>"More info"</b> and then click <b>"Run anyway"</b>.</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p data-i18n="footer_text">CopyWithRAW — Simple Open Source Photo Backup Tool</p>
+        </div>
+    </footer>
+
+    <!-- Multilingual i18n Script -->
+    <script>
+        const i18n = {
+            en: {
+                hero_title: 'Select JPEG or RAW.<br><span>Copy Both Automatically.</span>',
+                hero_tagline: 'When backing up photo folders, select just one file. CopyWithRAW automatically finds and copies both the JPEG and RAW photo files together.',
+                concept_title: 'How It Works',
+                concept_desc: 'You don\'t need to manually search for matching <b>.NEF</b>, <b>.CR3</b>, or <b>.ARW</b> files in your photo folder. Select the <b>JPEG</b> (or the <b>RAW</b>), right-click <b>Copy with RAW</b>, and the rest get copied over automatically — including <b>.xmp</b> edit files!',
+                download_heading: 'Download CopyWithRAW',
+                win_exe_title: '🪟 Windows (.EXE)',
+                win_exe_desc: 'Single-click installer wizard with automatic registry setup.',
+                btn_win_exe: 'Download (.EXE)',
+                win_zip_title: '⚡ Windows Portable',
+                win_zip_desc: 'Standalone batch scripts package (No installer EXE needed).',
+                btn_win_zip: 'Download (.ZIP)',
+                mac_title: '🍎 macOS',
+                mac_desc: 'Finder Quick Action package (.pkg).',
+                btn_mac: 'Download (.PKG)',
+                linux_title: '🐧 Linux',
+                linux_desc: 'Nautilus script package (.tar.gz).',
+                btn_linux: 'Download (.TAR.GZ)',
+                portable_heading: '⚡ Portable Scripts Package — What it is & How to Use',
+                portable_intro: 'The Portable Scripts package contains the raw batch files (Install.bat, CopyWithRAW.ps1, RunHidden.vbs, and FastStone helpers) for users who want to run the scripts directly without an installer wizard.',
+                portable_step1: 'Download and extract <code>CopyWithRAW-Windows-Portable-Scripts.zip</code> to a permanent folder on your computer (e.g. <code>C:\\CopyWithRAW\\</code>).',
+                portable_step2: 'Inside the folder, right-click <b>Install.bat</b> and select <b>"Run as administrator"</b>.',
+                portable_step3: 'That\'s it! Right-clicking any JPEG or RAW file in File Explorer will now display the Copy with RAW menu options.',
+                faststone_heading: '🦅 FastStone Image Viewer & FastRawViewer Setup Guide',
+                faststone_intro: 'You can add CopyWithRAW as an External Program in FastStone Image Viewer or FastRawViewer to trigger full batch copies with quick hotkeys (like <b>Alt + 1</b> or <b>E</b>):',
+                faststone_step1: 'Open <b>FastStone Image Viewer</b> and press <kbd style="background: #334155; padding: 2px 6px; border-radius: 4px; color: #fff;">F12</kbd> to open Settings.',
+                faststone_step2: 'Click the <b>Programs</b> tab at the top and click <b>Add</b>.',
+                faststone_step3: 'Enter a Name (e.g. <code>Copy to WL Auto</code>) and browse to <code>FastStone_CopyToWL_Auto.bat</code> inside your install folder.',
+                faststone_step4: 'Click <b>OK</b>. Now press <kbd style="background: #334155; padding: 2px 6px; border-radius: 4px; color: #fff;">Alt + 1</kbd> or <kbd style="background: #334155; padding: 2px 6px; border-radius: 4px; color: #fff;">E</kbd> anytime in FastStone to copy both JPEG & RAW files instantly!',
+                smartscreen_tip: '<strong>💡 Windows SmartScreen Notice:</strong> If Windows shows <i>"Windows protected your PC"</i> when launching the installer, simply click <b>"More info"</b> and then click <b>"Run anyway"</b>.',
+                footer_text: 'CopyWithRAW — Simple Open Source Photo Backup Tool'
+            },
+            vi: {
+                hero_title: 'Chọn file JPEG hoặc RAW.<br><span>Tự động sao chép cả hai.</span>',
+                hero_tagline: 'Khi sao lưu ảnh trong thư mục, bạn chỉ cần chọn một file. CopyWithRAW sẽ tự động tìm và sao chép cả file JPEG lẫn file RAW đi cùng nhau.',
+                concept_title: 'Cách Hoạt Động',
+                concept_desc: 'Bạn không cần phải tìm thủ công file <b>.NEF</b>, <b>.CR3</b>, hay <b>.ARW</b> tương ứng nữa. Chọn file <b>JPEG</b> (hoặc <b>RAW</b>), nhấp chuột phải chọn <b>Copy with RAW</b>, tất cả các file liên quan — bao gồm cả file chỉnh sửa <b>.xmp</b> — sẽ được sao chép tự động!',
+                download_heading: 'Tải Về CopyWithRAW',
+                win_exe_title: '🪟 Windows (.EXE)',
+                win_exe_desc: 'Bộ cài đặt tự động bấm 1 click cho Windows.',
+                btn_win_exe: 'Tải Về (.EXE)',
+                win_zip_title: '⚡ Windows Portable Script',
+                win_zip_desc: 'Gói file script chạy trực tiếp (Không cần bộ cài EXE).',
+                btn_win_zip: 'Tải Về (.ZIP)',
+                mac_title: '🍎 macOS',
+                mac_desc: 'Gói Finder Quick Action (.pkg) cho máy Mac.',
+                btn_mac: 'Tải Về (.PKG)',
+                linux_title: '🐧 Linux',
+                linux_desc: 'Gói Nautilus script (.tar.gz) cho Linux.',
+                btn_linux: 'Tải Về (.TAR.GZ)',
+                portable_heading: '⚡ Gói Portable Script — Là gì & Cách Sử Dụng',
+                portable_intro: 'Gói Portable Script chứa các file script gốc (Install.bat, CopyWithRAW.ps1, RunHidden.vbs và file FastStone) dành cho người muốn chạy script trực tiếp mà không qua bộ cài.',
+                portable_step1: 'Tải về và giải nén <code>CopyWithRAW-Windows-Portable-Scripts.zip</code> vào một thư mục cố định (ví dụ: <code>C:\\CopyWithRAW\\</code>).',
+                portable_step2: 'Mở thư mục, nhấp chuột phải vào file <b>Install.bat</b> và chọn <b>"Run as administrator"</b>.',
+                portable_step3: 'Xong! Nhấp chuột phải vào bất kỳ file JPEG hay RAW nào trong File Explorer sẽ hiển thị menu Copy with RAW.',
+                faststone_heading: '🦅 Hướng Dẫn Tích Hợp FastStone Image Viewer & FastRawViewer',
+                faststone_intro: 'Bạn có thể thêm CopyWithRAW vào danh sách External Program của FastStone hoặc FastRawViewer để gán phím tắt sao chép nhanh (như <b>Alt + 1</b> hoặc <b>E</b>):',
+                faststone_step1: 'Mở <b>FastStone Image Viewer</b> và bấm phím <kbd style="background: #334155; padding: 2px 6px; border-radius: 4px; color: #fff;">F12</kbd> để vào Settings.',
+                faststone_step2: 'Chọn thẻ <b>Programs</b> ở phía trên rồi bấm <b>Add</b>.',
+                faststone_step3: 'Nhập Tên (ví dụ: <code>Copy to WL Auto</code>) và trỏ tới file <code>FastStone_CopyToWL_Auto.bat</code> trong thư mục của bạn.',
+                faststone_step4: 'Bấm <b>OK</b>. Giờ đây bạn chỉ cần nhấn <kbd style="background: #334155; padding: 2px 6px; border-radius: 4px; color: #fff;">Alt + 1</kbd> hoặc <kbd style="background: #334155; padding: 2px 6px; border-radius: 4px; color: #fff;">E</kbd> trong FastStone là cả file JPEG & RAW sẽ được copy tự động!',
+                smartscreen_tip: '<strong>💡 Lưu ý Windows SmartScreen:</strong> Nếu Windows hiện màn hình cảnh báo <i>"Windows protected your PC"</i>, hãy nhấp vào <b>"More info"</b> rồi bấm <b>"Run anyway"</b>.',
+                footer_text: 'CopyWithRAW — Công cụ sao lưu ảnh mã nguồn mở đơn giản'
+            },
+            es: {
+                hero_title: 'Selecciona JPEG o RAW.<br><span>Copia Ambos Automáticamente.</span>',
+                hero_tagline: 'Al hacer copias de seguridad, selecciona solo un archivo. CopyWithRAW encuentra y copia automáticamente las fotos JPEG y RAW juntas.',
+                concept_title: 'Cómo Funciona',
+                concept_desc: 'No necesitas buscar manualmente archivos <b>.NEF</b>, <b>.CR3</b> o <b>.ARW</b> coincidentes. Selecciona el <b>JPEG</b> (o <b>RAW</b>), haz clic derecho en Copiar y el resto se copiará automáticamente, ¡incluidos los archivos <b>.xmp</b>!',
+                download_heading: 'Descargar CopyWithRAW',
+                win_exe_title: '🪟 Windows (.EXE)',
+                win_exe_desc: 'Instalador automático para Windows.',
+                btn_win_exe: 'Descargar (.EXE)',
+                win_zip_title: '⚡ Windows Portable',
+                win_zip_desc: 'Paquete de scripts portátiles (Sin instalador EXE).',
+                btn_win_zip: 'Descargar (.ZIP)',
+                mac_title: '🍎 macOS',
+                mac_desc: 'Paquete Quick Action para Finder (.pkg).',
+                btn_mac: 'Descargar (.PKG)',
+                linux_title: '🐧 Linux',
+                linux_desc: 'Paquete de scripts para Nautilus (.tar.gz).',
+                btn_linux: 'Descargar (.TAR.GZ)',
+                portable_heading: '⚡ Paquete de Scripts Portátiles — Qué es y Cómo usar',
+                portable_intro: 'El paquete portátil contiene los scripts originales para usuarios que prefieren ejecutarlos directamente.',
+                portable_step1: 'Descarga y extrae <code>CopyWithRAW-Windows-Portable-Scripts.zip</code> en una carpeta permanente.',
+                portable_step2: 'Haz clic derecho en <b>Install.bat</b> y selecciona <b>"Ejecutar como administrador"</b>.',
+                portable_step3: '¡Listo! El menú al hacer clic derecho estará activo inmediatamente.',
+                smartscreen_tip: '<strong>💡 Nota de Windows SmartScreen:</strong> Si ves <i>"Windows protegió su PC"</i>, haz clic en <b>"Más información"</b> y luego en <b>"Ejecutar de todos modos"</b>.',
+                footer_text: 'CopyWithRAW — Herramienta de copia de fotos de código abierto'
+            },
+            de: {
+                hero_title: 'Wähle JPEG oder RAW.<br><span>Kopiere Beide Automatisch.</span>',
+                hero_tagline: 'Wähle beim Sichern von Fotoordnern nur eine Datei aus. CopyWithRAW findet und kopiert JPEG- und RAW-Dateien automatisch zusammen.',
+                concept_title: 'So funktioniert es',
+                concept_desc: 'Keine manuelle Suche mehr nach passenden <b>.NEF</b>-, <b>.CR3</b>- oder <b>.ARW</b>-Dateien. JPEG oder RAW auswählen, Rechtsklick Kopieren, und der Rest wird automatisch kopiert — inkl. <b>.xmp</b>-Dateien!',
+                download_heading: 'CopyWithRAW Herunterladen',
+                win_exe_title: '🪟 Windows (.EXE)',
+                win_exe_desc: 'Installer für Windows mit automatischer Registrierung.',
+                btn_win_exe: 'Download (.EXE)',
+                win_zip_title: '⚡ Windows Portable',
+                win_zip_desc: 'Tragbares Skript-Paket (Kein Installer erforderlich).',
+                btn_win_zip: 'Download (.ZIP)',
+                mac_title: '🍎 macOS',
+                mac_desc: 'Finder Quick Action Paket (.pkg).',
+                btn_mac: 'Download (.PKG)',
+                linux_title: '🐧 Linux',
+                linux_desc: 'Nautilus Skript Paket (.tar.gz).',
+                btn_linux: 'Download (.TAR.GZ)',
+                portable_heading: '⚡ Portables Skript-Paket — Verwendung',
+                portable_intro: 'Enthält die direkten Skriptdateien für Benutzer, die keinen Installer verwenden möchten.',
+                portable_step1: 'Entpacke <code>CopyWithRAW-Windows-Portable-Scripts.zip</code> in einen Ordner.',
+                portable_step2: 'Klicke mit der rechten Maustaste auf <b>Install.bat</b> und wähle <b>"Als Administrator ausführen"</b>.',
+                portable_step3: 'Fertig! Das Kontextmenü ist sofort verfügbar.',
+                smartscreen_tip: '<strong>💡 SmartScreen-Hinweis:</strong> Bei <i>"Der Computer wurde durch Windows geschützt"</i> auf <b>"Weitere Informationen"</b> und dann auf <b>"Trotzdem ausführen"</b> klicken.',
+                footer_text: 'CopyWithRAW — Einfaches Open-Source-Fotosicherungstool'
+            },
+            fr: {
+                hero_title: 'Sélectionnez JPEG ou RAW.<br><span>Copie Automatique des Deux.</span>',
+                hero_tagline: 'Lors de la sauvegarde, sélectionnez un seul fichier. CopyWithRAW trouve et copie automatiquement les photos JPEG et RAW ensemble.',
+                concept_title: 'Comment ça marche',
+                concept_desc: 'Plus besoin de chercher manuellement vos fichiers <b>.NEF</b>, <b>.CR3</b> ou <b>.ARW</b>. Sélectionnez le <b>JPEG</b> (ou le <b>RAW</b>), faites un clic droit Copier, et le reste est copié automatiquement — y compris les fichiers <b>.xmp</b> !',
+                download_heading: 'Télécharger CopyWithRAW',
+                win_exe_title: '🪟 Windows (.EXE)',
+                win_exe_desc: 'Installateur automatique pour Windows.',
+                btn_win_exe: 'Télécharger (.EXE)',
+                win_zip_title: '⚡ Windows Portable',
+                win_zip_desc: 'Scripts autonomes (Sans fichier d\'installation EXE).',
+                btn_win_zip: 'Télécharger (.ZIP)',
+                mac_title: '🍎 macOS',
+                mac_desc: 'Paquet Action Rapide Finder (.pkg).',
+                btn_mac: 'Télécharger (.PKG)',
+                linux_title: '🐧 Linux',
+                linux_desc: 'Paquet de scripts Nautilus (.tar.gz).',
+                btn_linux: 'Télécharger (.TAR.GZ)',
+                portable_heading: '⚡ Paquet de Scripts Portables — Utilisation',
+                portable_intro: 'Contient les scripts bruts pour les utilisateurs préférant une exécution sans installateur.',
+                portable_step1: 'Téléchargez et extrayez <code>CopyWithRAW-Windows-Portable-Scripts.zip</code>.',
+                portable_step2: 'Faites un clic droit sur <b>Install.bat</b> et choisissez <b>"Exécuter en tant qu\'administrateur"</b>.',
+                portable_step3: 'Terminé ! Le menu contextuel est prêt.',
+                smartscreen_tip: '<strong>💡 SmartScreen Windows :</strong> Si vous voyez <i>"Windows a protégé votre ordinateur"</i>, cliquez sur <b>"Informations complémentaires"</b> puis <b>"Exécuter quand même"</b>.',
+                footer_text: 'CopyWithRAW — Outil de sauvegarde photo open source'
+            },
+            ja: {
+                hero_title: 'JPEGかRAWを選ぶだけ。<br><span>両方を自動コピー。</span>',
+                hero_tagline: 'バックアップ時、一方のファイルを選ぶだけで、CopyWithRAWがペアとなるJPEGとRAWを自動的にまとめてコピーします。',
+                concept_title: '仕組み',
+                concept_desc: '<b>.NEF</b>、<b>.CR3</b>、<b>.ARW</b>などの対応ファイルを検索する必要はありません。<b>JPEG</b>または<b>RAW</b>を選択して右クリックコピーするだけで、<b>.xmp</b>編集ファイルを含めて自動コピーされます！',
+                download_heading: 'CopyWithRAW をダウンロード',
+                win_exe_title: '🪟 Windows (.EXE)',
+                win_exe_desc: '自動セットアップ対応のWindowsインストーラー。',
+                btn_win_exe: 'ダウンロード (.EXE)',
+                win_zip_title: '⚡ Windows ポータブル',
+                win_zip_desc: 'インストーラー不要の直接スクリプトパッケージ。',
+                btn_win_zip: 'ダウンロード (.ZIP)',
+                mac_title: '🍎 macOS',
+                mac_desc: 'Finderクイックアクション対応 (.pkg)。',
+                btn_mac: 'ダウンロード (.PKG)',
+                linux_title: '🐧 Linux',
+                linux_desc: 'Nautilusスクリプト対応 (.tar.gz)。',
+                btn_linux: 'ダウンロード (.TAR.GZ)',
+                portable_heading: '⚡ ポータブルスクリプト版の使い方',
+                portable_intro: 'インストーラーを使わずに直接スクリプトを実行したいユーザー向けのパッケージです。',
+                portable_step1: '<code>CopyWithRAW-Windows-Portable-Scripts.zip</code> を解凍します。',
+                portable_step2: '<b>Install.bat</b> を右クリックし「管理者として実行」を選択します。',
+                portable_step3: 'これで完了です！右クリックメニューから利用可能です。',
+                smartscreen_tip: '<strong>💡 SmartScreenに関する注意:</strong> 「WindowsによってPCが保護されました」と表示された場合は、「詳細情報」をクリックしてから「実行」をクリックしてください。',
+                footer_text: 'CopyWithRAW — シンプルなオープンソース写真バックアップツール'
+            },
+            zh: {
+                hero_title: '选择 JPEG 或 RAW。<br><span>自动关联复制两者。</span>',
+                hero_tagline: '备份照片文件夹时，只需选择一个文件。CopyWithRAW 会自动查找并关联复制 JPEG 和 RAW 照片。',
+                concept_title: '工作原理',
+                concept_desc: '无需手动寻找匹配的 <b>.NEF</b>、<b>.CR3</b> 或 <b>.ARW</b> 文件。选择 <b>JPEG</b>（或 <b>RAW</b>），右键复制，相匹配的文件以及 <b>.xmp</b> 修图数据将全自动同步复制！',
+                download_heading: '下载 CopyWithRAW',
+                win_exe_title: '🪟 Windows (.EXE)',
+                win_exe_desc: '包含右键菜单配置的一键安装包。',
+                btn_win_exe: '下载 (.EXE)',
+                win_zip_title: '⚡ Windows 便携版',
+                win_zip_desc: '免安装绿色的脚本压缩包。',
+                btn_win_zip: '下载 (.ZIP)',
+                mac_title: '🍎 macOS',
+                mac_desc: 'Finder 快捷操作安装包 (.pkg)。',
+                btn_mac: '下载 (.PKG)',
+                linux_title: '🐧 Linux',
+                linux_desc: 'Nautilus 脚本安装包 (.tar.gz)。',
+                btn_linux: '下载 (.TAR.GZ)',
+                portable_heading: '⚡ 便携脚本包 — 说明与使用',
+                portable_intro: '适合不希望使用 EXE 安装程序、直接运行脚本的用户。',
+                portable_step1: '下载并解压 <code>CopyWithRAW-Windows-Portable-Scripts.zip</code> 到任意文件夹。',
+                portable_step2: '右键点击 <b>Install.bat</b>，选择 <b>“以管理员身份运行”</b>。',
+                portable_step3: '完成！右键点击照片即可看到 CopyWithRAW 菜单。',
+                smartscreen_tip: '<strong>💡 Windows SmartScreen 提示：</strong>如果弹出 <i>“Windows 已保护你的电脑”</i> 提示，点击<b>“更多信息”</b>，然后点击<b>“仍要运行”</b>即可。',
+                footer_text: 'CopyWithRAW — 简单高效的开源照片备份工具'
+            }
+        };
+
+        function getBrowserLanguage() {
+            const navLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+            const langCode = navLang.split('-')[0];
+            return i18n[langCode] ? langCode : 'en';
+        }
+
+        function changeLanguage(lang) {
+            if (!i18n[lang]) lang = 'en';
+            
+            // Save preference
+            localStorage.setItem('preferred_lang', lang);
+            document.documentElement.lang = lang;
+            
+            // Update dropdown
+            document.getElementById('langSelect').value = lang;
+
+            // Translate elements
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[lang][key]) {
+                    el.innerHTML = i18n[lang][key];
+                }
+            });
+        }
+
+        // Initialize language on page load
+        (function initLang() {
+            const savedLang = localStorage.getItem('preferred_lang');
+            const defaultLang = savedLang || getBrowserLanguage();
+            changeLanguage(defaultLang);
+        })();
+    </script>
+
+</body>
+</html>

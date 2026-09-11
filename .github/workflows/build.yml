@@ -1,38 +1,111 @@
-name: Build Installer
+name: Build Installers
 
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-  # Create a release build when you push a tag like: git tag v1.0.0 && git push --tags
   release:
     types: [ created ]
 
 jobs:
-  build:
+
+  # ============================================================
+  # Windows — builds CopyWithRAW-Setup-vX.X.X.exe via Inno Setup
+  # ============================================================
+  build-windows:
     runs-on: windows-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      # Inno Setup is pre-installed on GitHub Actions Windows runners
-      - name: Build installer with Inno Setup
+      - name: Build Windows installer
         run: |
           & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer\setup.iss
         shell: pwsh
 
-      - name: Upload installer artifact
+      - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
         with:
-          name: CopyWithRAW-Setup
+          name: CopyWithRAW-Windows
           path: dist\*.exe
           if-no-files-found: error
 
-      # Only attach to a GitHub Release when a release is created
-      - name: Attach installer to GitHub Release
+      - name: Attach to GitHub Release
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
           files: dist\*.exe
+
+  # ============================================================
+  # macOS — packages Python script + Automator workflow as .pkg
+  # ============================================================
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Stage macOS package files
+        run: |
+          mkdir -p pkg-root/usr/local/lib/CopyWithRAW
+          mkdir -p pkg-root/Library/Services
+          cp src/copy_with_raw.py pkg-root/usr/local/lib/CopyWithRAW/
+          chmod +x pkg-root/usr/local/lib/CopyWithRAW/copy_with_raw.py
+          cp -R "src/macos/CopyWithRAW.workflow" pkg-root/Library/Services/
+          mkdir -p dist
+
+      - name: Build macOS .pkg
+        run: |
+          pkgbuild \
+            --root pkg-root \
+            --identifier com.photography.copywithraw \
+            --version 1.0.0 \
+            --install-location / \
+            dist/CopyWithRAW-macOS.pkg
+
+      - name: Upload macOS artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CopyWithRAW-macOS
+          path: dist/CopyWithRAW-macOS.pkg
+          if-no-files-found: error
+
+      - name: Attach to GitHub Release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/CopyWithRAW-macOS.pkg
+
+  # ============================================================
+  # Linux — packages as .tar.gz with install.sh
+  # ============================================================
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Stage Linux package files
+        run: |
+          mkdir -p linux-pkg/CopyWithRAW
+          cp src/copy_with_raw.py linux-pkg/CopyWithRAW/
+          cp installer/install_linux.sh linux-pkg/CopyWithRAW/install.sh
+          chmod +x linux-pkg/CopyWithRAW/install.sh
+          chmod +x linux-pkg/CopyWithRAW/copy_with_raw.py
+          mkdir -p dist
+
+      - name: Build Linux .tar.gz
+        run: |
+          cd linux-pkg
+          tar -czf ../dist/CopyWithRAW-Linux.tar.gz CopyWithRAW/
+
+      - name: Upload Linux artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CopyWithRAW-Linux
+          path: dist/CopyWithRAW-Linux.tar.gz
+          if-no-files-found: error
+
+      - name: Attach to GitHub Release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/CopyWithRAW-Linux.tar.gz

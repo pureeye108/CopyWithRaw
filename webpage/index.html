@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CopyWithRAW — Ultimate Photo Batch & RAW/JPEG Pairing Tool</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-card-hover: #334155;
+            --primary: #38bdf8;
+            --primary-glow: rgba(56, 189, 248, 0.3);
+            --accent: #818cf8;
+            --accent-green: #4ade80;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --radius-lg: 16px;
+            --radius-md: 10px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header / Navbar */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 0;
+        }
+
+        .nav-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            align-items: center;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), #0284c7);
+            color: #0f172a;
+            box-shadow: 0 4px 20px var(--primary-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(56, 189, 248, 0.5);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-outline:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 80px 0 60px;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+            z-index: -1;
+            filter: blur(60px);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 30px;
+            color: var(--primary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -1.5px;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--primary), #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 760px;
+            margin: 0 auto 36px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 50px;
+        }
+
+        .hero-image-wrapper {
+            position: relative;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            margin-top: 20px;
+        }
+
+        .hero-image-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 80px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-header h2 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .section-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 28px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-icon {
+            width: 52px;
+            height: 52px;
+            background: rgba(56, 189, 248, 0.15);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Diagram Section */
+        .diagram-section {
+            padding: 60px 0 80px;
+            background: #0b1120;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .diagram-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .diagram-img-box img {
+            width: 100%;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .feature-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .feature-check {
+            width: 24px;
+            height: 24px;
+            background: rgba(74, 222, 128, 0.15);
+            color: var(--accent-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .feature-item h4 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .feature-item p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Usage & Steps Section */
+        .usage {
+            padding: 80px 0;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+        }
+
+        .step-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            position: relative;
+        }
+
+        .step-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: rgba(56, 189, 248, 0.2);
+            position: absolute;
+            top: 16px;
+            right: 20px;
+        }
+
+        .step-card h3 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .step-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Code Block */
+        .code-box {
+            background: #020617;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--primary);
+            overflow-x: auto;
+            margin-top: 12px;
+        }
+
+        /* Callout Box */
+        .alert-box {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 30px;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .alert-icon {
+            font-size: 24px;
+            color: #f59e0b;
+        }
+
+        .alert-content h4 {
+            color: #f59e0b;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .alert-content p {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+        }
+
+        /* Downloads Section */
+        .download-section {
+            padding: 80px 0;
+            text-align: center;
+            background: linear-gradient(180deg, var(--bg-dark) 0%, #0b1120 100%);
+        }
+
+        .download-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .dl-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 36px 24px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .dl-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+        }
+
+        .dl-icon {
+            font-size: 40px;
+            margin-bottom: 16px;
+        }
+
+        .dl-card h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .dl-card p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 24px;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 30px 0;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .hero h1 { font-size: 2.5rem; }
+            .diagram-container { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header>
+        <div class="container nav-wrapper">
+            <a href="#" class="logo">
+                <div class="logo-icon">📸</div>
+                CopyWith<span>RAW</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#how-it-works">How It Works</a></li>
+                <li><a href="#faststone">FastStone Setup</a></li>
+                <li><a href="#download">Download</a></li>
+            </ul>
+            <a href="https://github.com/pureeye108/CopyWithRaw" target="_blank" class="btn btn-outline">
+                ⭐ GitHub Repo
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="badge">🚀 Version 1.0.0 — Cross-Platform Support</div>
+            <h1>Smart RAW & JPEG Photo<br><span>Batch Copy Tool</span></h1>
+            <p>Never lose associated camera RAW files or XMP metadata again. Select your JPEG or RAW photos and CopyWithRAW automatically pairs and copies all associated files together instantly.</p>
+            
+            <div class="hero-buttons">
+                <a href="#download" class="btn btn-primary">⬇️ Download Installer</a>
+                <a href="#how-it-works" class="btn btn-outline">📖 Learn More</a>
+            </div>
+
+            <div class="hero-image-wrapper">
+                <img src="images/hero.jpg" alt="CopyWithRAW Showcase Banner">
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Grid -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Why Photographers Love CopyWithRAW</h2>
+                <p>Designed for wildlife, sports, event, and landscape photographers sorting thousands of photos.</p>
+            </div>
+
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-icon">⚡</div>
+                    <h3>Two-Way Intelligent Pairing</h3>
+                    <p>Select JPEGs to automatically copy matching RAWs, or select RAWs to automatically copy matching JPEGs. Handles prefix matches like <code>_BIR3454JPEG 12.jpg</code> matching <code>_BIR3454.nef</code>.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🏷️</div>
+                    <h3>XMP Sidecar Detection</h3>
+                    <p>Automatically detects and copies <code>.xmp</code> sidecar files matching both the JPEG and RAW file names, keeping your Lightroom & Camera RAW edits intact.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">📁</div>
+                    <h3>One-Click Workflow Options</h3>
+                    <p>Three convenient options: Open Explorer-style picker, copy directly to your preset Wildlife folder, or automatically create a subfolder matching the source folder name.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🦅</div>
+                    <h3>FastStone Viewer Integration</h3>
+                    <p>Integrates seamlessly into FastStone Image Viewer as an External Program. Trigger full batch copies with single-key shortcuts like <code>Alt + 1</code> or <code>E</code>.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🔕</div>
+                    <h3>Silent Background Execution</h3>
+                    <p>No flashing CMD or PowerShell windows. Runs quietly in the background using hidden wrappers for a clean desktop experience.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🌐</div>
+                    <h3>Cross-Platform Support</h3>
+                    <p>Native installers for <b>Windows (.exe)</b>, <b>macOS (.pkg Finder Actions)</b>, and <b>Linux (.tar.gz Nautilus Scripts)</b> built automatically on GitHub.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Diagram Section -->
+    <section id="how-it-works" class="diagram-section">
+        <div class="container">
+            <div class="diagram-container">
+                <div class="diagram-img-box">
+                    <img src="images/diagram.jpg" alt="Automated RAW JPEG XMP Pairing Diagram">
+                </div>
+                <div>
+                    <h2>How Automated File Pairing Works</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 24px;">When you select photos in your file manager or photo viewer, CopyWithRAW scans the directory in real-time to locate related assets.</p>
+
+                    <ul class="feature-list">
+                        <li class="feature-item">
+                            <div class="feature-check">✓</div>
+                            <div>
+                                <h4>Prefix & Base Name Matching</h4>
+                                <p>Matches edited or exported JPEGs back to original RAW captures even if suffixes were added during export.</p>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <div class="feature-check">✓</div>
+                            <div>
+                                <h4>Broad Format Compatibility</h4>
+                                <p>Supports <code>.NEF</code>, <code>.CR2</code>, <code>.CR3</code>, <code>.ARW</code>, <code>.DNG</code>, <code>.RAF</code>, <code>.ORF</code>, <code>.RW2</code>, <code>.PEF</code>, and more.</p>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <div class="feature-check">✓</div>
+                            <div>
+                                <h4>Batch Coordination Engine</h4>
+                                <p>Combines multi-selected files into a single background batch session, guaranteeing fast processing with zero duplicate popups.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Usage Steps -->
+    <section class="usage">
+        <div class="container">
+            <div class="section-header">
+                <h2>How to Use CopyWithRAW</h2>
+                <p>Easy right-click menu items built into your operating system.</p>
+            </div>
+
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">01</div>
+                    <h3>Select Photos</h3>
+                    <p>In File Explorer, Finder, or FastStone, highlight any number of JPEG or RAW photo files.</p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">02</div>
+                    <h3>Right-Click Menu</h3>
+                    <p>Right-click the selected photos and choose your preferred action:</p>
+                    <ul style="margin-top: 10px; padding-left: 18px; color: var(--text-muted); font-size: 0.85rem;">
+                        <li><b>Copy with RAW / JPEG</b></li>
+                        <li><b>Copy to Selected WL</b></li>
+                        <li><b>Copy to WL (Original Folder)</b></li>
+                    </ul>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">03</div>
+                    <h3>Automated Copy</h3>
+                    <p>The tool pairs all RAWs, JPEGs, and XMP sidecars, copies them to your target directory, and opens the destination folder automatically!</p>
+                </div>
+            </div>
+
+            <!-- SmartScreen Callout -->
+            <div class="alert-box">
+                <div class="alert-icon">⚠️</div>
+                <div class="alert-content">
+                    <h4>Windows SmartScreen Popup?</h4>
+                    <p>If Windows displays <i>"Windows protected your PC"</i> when launching the installer, click <b>"More info"</b> and then click <b>"Run anyway"</b>. This occurs simply because the installer is custom-built and not signed with an expensive commercial certificate.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FastStone Setup Section -->
+    <section id="faststone" style="padding: 60px 0; background: #0b1120; border-top: 1px solid var(--border-color);">
+        <div class="container">
+            <div class="section-header">
+                <h2>FastStone Image Viewer Integration</h2>
+                <p>Add CopyWithRAW to FastStone for blazingly fast photo culling with hotkeys.</p>
+            </div>
+
+            <div class="card" style="max-width: 800px; margin: 0 auto;">
+                <ol style="padding-left: 20px; display: flex; flex-direction: column; gap: 12px; color: var(--text-muted);">
+                    <li>Open <b>FastStone Image Viewer</b> and press <kbd style="background: #334155; padding: 2px 6px; border-radius: 4px; color: #fff;">F12</kbd> to open Settings.</li>
+                    <li>Select the <b>Programs</b> tab at the top and click <b>Add</b>.</li>
+                    <li>Enter a name such as <strong style="color: #fff;">Copy to WL (Auto)</strong>.</li>
+                    <li>Browse to the executable script inside your install directory:
+                        <div class="code-box">C:\Program Files\CopyWithRAW\RunHidden.vbs</div>
+                    </li>
+                    <li>In the parameter box, add the destination argument:
+                        <div class="code-box">"%src%" "WL:" "AutoSubfolder"</div>
+                    </li>
+                    <li>Click <b>OK</b>. Now press <kbd style="background: #334155; padding: 2px 6px; border-radius: 4px; color: #fff;">Alt + 1</kbd> or <kbd style="background: #334155; padding: 2px 6px; border-radius: 4px; color: #fff;">E</kbd> anytime in FastStone to trigger the copy!</li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download Section -->
+    <section id="download" class="download-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Download CopyWithRAW</h2>
+                <p>Free and open-source. Select your operating system below.</p>
+            </div>
+
+            <div class="download-cards">
+                <div class="dl-card">
+                    <div class="dl-icon">🪟</div>
+                    <h3>Windows</h3>
+                    <p>Includes single-click <code>.exe</code> installer with Explorer right-click context menu registration.</p>
+                    <a href="https://github.com/pureeye108/CopyWithRaw/releases" target="_blank" class="btn btn-primary" style="width: 100%; justify-content: center;">Download .EXE Installer</a>
+                </div>
+
+                <div class="dl-card">
+                    <div class="dl-icon">🍎</div>
+                    <h3>macOS</h3>
+                    <p>Includes <code>.pkg</code> installer with Finder Quick Actions right-click integration.</p>
+                    <a href="https://github.com/pureeye108/CopyWithRaw/releases" target="_blank" class="btn btn-outline" style="width: 100%; justify-content: center;">Download .PKG Installer</a>
+                </div>
+
+                <div class="dl-card">
+                    <div class="dl-icon">🐧</div>
+                    <h3>Linux</h3>
+                    <p>Includes <code>.tar.gz</code> archive with Nautilus / GNOME Files script integration.</p>
+                    <a href="https://github.com/pureeye108/CopyWithRaw/releases" target="_blank" class="btn btn-outline" style="width: 100%; justify-content: center;">Download .TAR.GZ Package</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>CopyWithRAW — Open Source Photography Utility. Released under the MIT License.</p>
+            <p style="margin-top: 8px;">Maintained on <a href="https://github.com/pureeye108/CopyWithRaw" target="_blank">GitHub</a></p>
+        </div>
+    </footer>
+
+</body>
+</html>

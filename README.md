@@ -32,6 +32,8 @@ Works with **FastStone Image Viewer** as an external program too.
 1. Go to the [Releases](../../releases) page.
 2. Download `CopyWithRAW-Setup-vX.X.X.exe`.
 3. Run it and follow the wizard.
+   > [!NOTE]
+   > **Windows SmartScreen warning:** If Windows shows *"Windows protected your PC"*, click **"More info"** and then click **"Run anyway"**. This warning appears because the installer is custom-built and not signed with an expensive commercial certificate.
    - You will be asked for your **Wildlife destination folder** (e.g. `D:\Selected\Wildlife`).
    - You will be asked for a **default folder picker location** (e.g. `D:\Selected`).
 4. Done! Right-click any `.jpg`, `.jpeg`, or RAW file to use the new menu options.

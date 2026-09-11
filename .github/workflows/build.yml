@@ -1,0 +1,38 @@
+name: Build Installer
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  # Create a release build when you push a tag like: git tag v1.0.0 && git push --tags
+  release:
+    types: [ created ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Inno Setup is pre-installed on GitHub Actions Windows runners
+      - name: Build installer with Inno Setup
+        run: |
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer\setup.iss
+        shell: pwsh
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CopyWithRAW-Setup
+          path: dist\*.exe
+          if-no-files-found: error
+
+      # Only attach to a GitHub Release when a release is created
+      - name: Attach installer to GitHub Release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist\*.exe

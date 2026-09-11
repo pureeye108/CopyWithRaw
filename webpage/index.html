@@ -291,9 +291,15 @@
 
             <div class="dl-grid">
                 <div class="dl-card">
-                    <h3>🪟 Windows</h3>
-                    <p>Single-click installer (.exe) with right-click menu setup.</p>
+                    <h3>🪟 Windows (.EXE)</h3>
+                    <p>Single-click installer wizard with automatic registry setup.</p>
                     <a href="https://github.com/pureeye108/CopyWithRaw/actions/runs/34558872926/artifacts/10183581574" class="btn-download">Download (.EXE)</a>
+                </div>
+
+                <div class="dl-card">
+                    <h3>⚡ Windows Portable Scripts</h3>
+                    <p>Standalone batch scripts package (No installer EXE needed).</p>
+                    <a href="CopyWithRAW-Windows-Portable-Scripts.zip" class="btn-download" style="background: #a855f7; color: #fff;">Download (.ZIP)</a>
                 </div>
 
                 <div class="dl-card">
@@ -307,6 +313,19 @@
                     <p>Nautilus script package (.tar.gz).</p>
                     <a href="https://github.com/pureeye108/CopyWithRaw/actions/runs/34558872926/artifacts/10183578728" class="btn-download">Download (.TAR.GZ)</a>
                 </div>
+            </div>
+
+            <!-- Portable Package Guide -->
+            <div style="margin-top: 50px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 30px; text-align: left;">
+                <h3 style="font-size: 1.3rem; margin-bottom: 10px; color: #a855f7;">⚡ Portable Scripts Package — What it is & How to Use</h3>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 16px;">
+                    The Portable Scripts package contains the raw batch files (<code>Install.bat</code>, <code>CopyWithRAW.ps1</code>, <code>RunHidden.vbs</code>, and FastStone helpers) for users who want to run the scripts directly without an installer wizard.
+                </p>
+                <ol style="color: var(--text-muted); padding-left: 20px; font-size: 0.9rem; display: flex; flex-direction: column; gap: 8px;">
+                    <li>Download and extract <code>CopyWithRAW-Windows-Portable-Scripts.zip</code> to a permanent folder on your computer (e.g. <code>C:\CopyWithRAW\</code>).</li>
+                    <li>Inside the folder, right-click <b>Install.bat</b> and select <b>"Run as administrator"</b>.</li>
+                    <li>That's it! Right-clicking any JPEG or RAW file in File Explorer will now display the Copy with RAW menu options.</li>
+                </ol>
             </div>
 
             <div class="tip-box">
